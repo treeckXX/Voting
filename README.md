@@ -254,8 +254,16 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Wird gesendet...';
 
-            // Simulate sending vote
-            setTimeout(() => {
+    }
+
+      
+            /*
+            emailjs.send("service_32swev6", "template_4pg16ul", {
+                to_email: "machelaaron@gmail.com",
+                topic: topic
+            });
+            */
+        }
                 // Show notification
                 const notification = document.getElementById('notification');
                 notification.classList.add('show');
@@ -281,16 +289,6 @@
             
             // Reset selection
             selectedTopic = null;
-        }
-
-      
-            /*
-            emailjs.send("service_32swev6", "template_4pg16ul", {
-                to_email: "machelaaron@gmail.com",
-                topic: topic
-            });
-            */
-        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
