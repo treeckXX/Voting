@@ -283,15 +283,9 @@
             selectedTopic = null;
         }
 
-        // Simulate sending email
-        function sendEmail(topic) {
-            // In a real implementation, you would use a service like:
-            // EmailJS, Formspree, or a custom backend to send the email
-            console.log(`Sending email to machelaaron@gmail.com with vote: ${topic}`);
-            
-            // Example using EmailJS (you would need to set up an account):
+      
             /*
-            emailjs.send("service_32swev6", "template_pirb1ln", {
+            emailjs.send("service_32swev6", "template_4pg16ul", {
                 to_email: "machelaaron@gmail.com",
                 topic: topic
             });
