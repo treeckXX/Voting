@@ -1,10 +1,16 @@
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Podcast-Themen Abstimmung</title>
+    <title>Podcast Topic Voting</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        (function(){
+            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+        })();
+    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -87,10 +93,10 @@
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center mb-4 md:mb-0">
                     <i class="fas fa-podcast text-3xl mr-3"></i>
-                    <h1 class="text-2xl md:text-3xl font-bold">Podcast-Themen Abstimmung</h1>
+                    <h1 class="text-2xl md:text-3xl font-bold">Podcast Topic Voting</h1>
                 </div>
                 <p class="text-center md:text-right text-indigo-100 max-w-md">
-                    Wähle dein favorisiertes Thema für die nächste Folge meines Podcasts. Jeder User hat eine Stimme pro Abstimmung.
+                    Choose your favorite topic for the next episode of my podcast. Each user has one vote per poll.
                 </p>
             </div>
         </div>
@@ -101,15 +107,14 @@
         <div class="max-w-4xl mx-auto">
             <!-- Introduction -->
             <div class="bg-white rounded-xl shadow-md p-6 mb-10 border border-gray-200">
-                <h2 class="text-xl font-bold text-podcast-dark mb-3">Warum wird abgestimmt?</h2>
+                <h2 class="text-xl font-bold text-podcast-dark mb-3">Why Vote?</h2>
                 <p class="text-gray-600 mb-4">
-                    Deine Meinung ist wichtig für die Zukunft meines Podcasts. Mit deiner Stimme hilfst du mir, 
-                    Themen auszuwählen, die interessant für dich und andere Hörer sind.
+                    Your opinion matters for the future of my podcast. Your vote helps me select topics that are interesting to you and other listeners.
                 </p>
                 <div class="flex items-center bg-blue-50 p-3 rounded-lg">
                     <i class="fas fa-info-circle text-podcast-primary mr-2"></i>
                     <p class="text-sm text-podcast-dark">
-                        <strong>Hinweis:</strong> Jeder User kann nur einmal abstimmen. Deine Auswahl wird verschlüsselt an mich gesendet.
+                        <strong>Note:</strong> Each user can vote only once. Your selection will be sent to me via encrypted email.
                     </p>
                 </div>
             </div>
@@ -124,9 +129,9 @@
                             <i class="fas fa-lightbulb text-purple-600 text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg text-podcast-dark">Technologie & Innovation</h3>
+                            <h3 class="font-bold text-lg text-podcast-dark">Technology & Innovation</h3>
                             <p class="text-gray-600 mt-2">
-                                Diskussion über die neuesten technologischen Entwicklungen und wie sie unser Leben verändern.
+                                Discussion about the latest technological developments and how they change our lives.
                             </p>
                         </div>
                     </div>
@@ -145,15 +150,15 @@
                             <i class="fas fa-heart text-green-600 text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg text-podcast-dark">Gesundheit & Wohlbefinden</h3>
+                            <h3 class="font-bold text-lg text-podcast-dark">Health & Wellness</h3>
                             <p class="text-gray-600 mt-2">
-                                Tipps für ein gesundes Leben, mentale Gesundheit und Work-Life-Balance.
+                                Tips for healthy living, mental health, and work-life balance.
                             </p>
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                            <i class="fas fa-user-friends mr-1"></i> Beliebt
+                            <i class="fas fa-user-friends mr-1"></i> Popular
                         </span>
                     </div>
                 </div>
@@ -166,15 +171,15 @@
                             <i class="fas fa-globe-europe text-blue-600 text-2xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg text-podcast-dark">Kultur & Gesellschaft</h3>
+                            <h3 class="font-bold text-lg text-podcast-dark">Culture & Society</h3>
                             <p class="text-gray-600 mt-2">
-                                Gesellschaftliche Themen, Kulturereignisse und ihre Auswirkungen auf uns.
+                                Societal topics, cultural events and their impact on us.
                             </p>
                         </div>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                            <i class="fas fa-fire mr-1"></i> Neu
+                            <i class="fas fa-fire mr-1"></i> New
                         </span>
                     </div>
                 </div>
@@ -184,15 +189,13 @@
             <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
                 <div class="flex flex-col md:flex-row items-center justify-between">
                     <div class="mb-4 md:mb-0">
-                        <h3 class="font-bold text-xl text-podcast-dark">Deine Auswahl bestätigen</h3>
-                        <p class="text-gray-600 mt-1">
-                            Wähle eines der Themen aus und klicke auf "Abstimmen"
-                        </p>
+                        <h3 class="font-bold text-xl text-podcast-dark">Confirm Your Selection</h3>
+                        <p class="text-gray-600 mt-1">Select a topic and click "Vote"</p>
                     </div>
                     <button id="submitBtn" 
                             class="submit-btn text-white font-bold py-3 px-8 rounded-full text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                             onclick="submitVote()" disabled>
-                        <i class="fas fa-vote-yea mr-2"></i> Abstimmen
+                        <i class="fas fa-vote-yea mr-2"></i> Vote
                     </button>
                 </div>
             </div>
@@ -206,8 +209,8 @@
                 <i class="fas fa-check-circle text-green-500 text-xl"></i>
             </div>
             <div class="ml-3">
-                <h4 class="font-bold text-gray-900">Vielen Dank für deine Stimme!</h4>
-                <p class="text-gray-600 mt-1 text-sm">Deine Wahl wurde erfolgreich übermittelt.</p>
+                <h4 class="font-bold text-gray-900">Thank you for your vote!</h4>
+                <p class="text-gray-600 mt-1 text-sm">Your selection has been sent successfully.</p>
             </div>
         </div>
     </div>
@@ -215,17 +218,17 @@
     <!-- Footer -->
     <footer class="bg-gray-800 text-gray-400 py-8 mt-12">
         <div class="container mx-auto px-4 text-center">
-            <p>© 2023 Podcast-Themen Abstimmung. Alle Rechte vorbehalten.</p>
-            <p class="mt-2 text-sm">Deine Stimme hilft mir, bessere Inhalte zu erstellen!</p>
+            <p>© 2023 Podcast Topic Voting. All rights reserved.</p>
+            <p class="mt-2 text-sm">Your vote helps me create better content!</p>
         </div>
     </footer>
 
     <script>
         let selectedTopic = null;
         const topics = {
-            topic1: "Technologie & Innovation",
-            topic2: "Gesundheit & Wohlbefinden",
-            topic3: "Kultur & Gesellschaft"
+            topic1: "Technology & Innovation",
+            topic2: "Health & Wellness",
+            topic3: "Culture & Society"
         };
 
         function selectTopic(topicId) {
@@ -245,35 +248,53 @@
 
         function submitVote() {
             if (!selectedTopic) {
-                alert("Bitte wähle zunächst ein Thema aus!");
+                alert("Please select a topic first!");
                 return;
             }
 
             // Disable button to prevent multiple submissions
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Wird gesendet...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
 
-    }
-
-      
-            /*
-            emailjs.send("service_32swev6", "template_4pg16ul", {
+            // Send email via EmailJS
+            emailjs.send("service_32swev6", "template_p74vyip", {
                 to_email: "machelaaron@gmail.com",
-                topic: topic
+                topic: topics[selectedTopic]
+            })
+            .then(function(response) {
+                console.log("SUCCESS!", response.status, response.text);
+                showNotification(true);
+            }, function(error) {
+                console.log("FAILED...", error);
+                showNotification(false);
+            })
+            .finally(() => {
+                resetVoting();
             });
-            */
         }
-                // Show notification
-                const notification = document.getElementById('notification');
-                notification.classList.add('show');
-                
-                // Reset after 3 seconds
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    resetVoting();
-                }, 3000);
-            }, 1500);
+
+        function showNotification(success) {
+            const notification = document.getElementById('notification');
+            const title = notification.querySelector('h4');
+            const message = notification.querySelector('p');
+            
+            if (success) {
+                title.textContent = "Thank you for your vote!";
+                message.textContent = "Your selection has been sent successfully.";
+                notification.querySelector('i').className = "fas fa-check-circle text-green-500 text-xl";
+            } else {
+                title.textContent = "Error sending vote";
+                message.textContent = "Please try again later.";
+                notification.querySelector('i').className = "fas fa-exclamation-circle text-red-500 text-xl";
+            }
+            
+            notification.classList.add('show');
+            
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
         }
 
         function resetVoting() {
@@ -285,10 +306,11 @@
             // Reset button
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-vote-yea mr-2"></i> Abstimmen';
+            submitBtn.innerHTML = '<i class="fas fa-vote-yea mr-2"></i> Vote';
             
             // Reset selection
             selectedTopic = null;
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
