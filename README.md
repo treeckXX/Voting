@@ -258,7 +258,12 @@
             </div>
         </section>
     </main>
-
+<div class="mt-8 flex justify-center">
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSe96idCVyKU9XoRtDbVuUxnK7MLJkJ03ozaSBM_Jmj5w5oerQ/viewform?usp=dialog" target="_blank" 
+     class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300">
+    📬 Feedback / Kontaktformular öffnen
+  </a>
+</div>
     <!-- Footer -->
     <footer class="py-8 text-center text-gray-400 border-t border-slate-800 mt-8">
         <div class="container mx-auto">
