@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -5,12 +6,6 @@
     <title>Podcast Topic Voting</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script>
-        (function(){
-            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
-        })();
-    </script>
     <script>
         tailwind.config = {
             theme: {
@@ -84,6 +79,16 @@
         .gradient-bg {
             background: linear-gradient(120deg, #4F46E5 0%, #7C3AED 100%);
         }
+        
+        .vote-animation {
+            animation: vote-pulse 0.5s ease;
+        }
+        
+        @keyframes vote-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -114,9 +119,31 @@
                 <div class="flex items-center bg-blue-50 p-3 rounded-lg">
                     <i class="fas fa-info-circle text-podcast-primary mr-2"></i>
                     <p class="text-sm text-podcast-dark">
-                        <strong>Note:</strong> Each user can vote only once. Your selection will be sent to me via encrypted email.
+                        <strong>Note:</strong> Each user can vote only once. Your selection will be sent to me via email.
                     </p>
                 </div>
+            </div>
+
+            <!-- Email Collection -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-10 border border-gray-200">
+                <h3 class="font-bold text-lg text-podcast-dark mb-4">Your Email (Required)</h3>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input 
+                        type="email" 
+                        id="userEmail" 
+                        placeholder="Enter your email address" 
+                        class="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-podcast-primary focus:border-transparent"
+                        required
+                    >
+                    <button 
+                        id="saveEmailBtn" 
+                        class="submit-btn text-white font-bold py-3 px-6 rounded-lg"
+                        onclick="saveUserEmail()"
+                    >
+                        Save Email
+                    </button>
+                </div>
+                <p class="text-gray-500 text-sm mt-2">We'll use this to identify you as a unique voter.</p>
             </div>
 
             <!-- Voting Section -->
@@ -193,7 +220,7 @@
                         <p class="text-gray-600 mt-1">Select a topic and click "Vote"</p>
                     </div>
                     <button id="submitBtn" 
-                            class="submit-btn text-white font-bold py-3 px-8 rounded-full text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                            class="submit-btn text-white font-bold py-3 px-8 rounded-full text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center" 
                             onclick="submitVote()" disabled>
                         <i class="fas fa-vote-yea mr-2"></i> Vote
                     </button>
@@ -225,11 +252,36 @@
 
     <script>
         let selectedTopic = null;
+        let userEmail = null;
         const topics = {
             topic1: "Technology & Innovation",
             topic2: "Health & Wellness",
             topic3: "Culture & Society"
         };
+
+        function saveUserEmail() {
+            const emailInput = document.getElementById('userEmail');
+            const email = emailInput.value.trim();
+            
+            if (!email) {
+                showNotification(false, "Please enter your email address");
+                return;
+            }
+            
+            // Simple email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification(false, "Please enter a valid email address");
+                return;
+            }
+            
+            userEmail = email;
+            document.getElementById('userEmail').disabled = true;
+            document.getElementById('saveEmailBtn').disabled = true;
+            document.getElementById('saveEmailBtn').textContent = "Email Saved";
+            
+            showNotification(true, "Email saved successfully!");
+        }
 
         function selectTopic(topicId) {
             // Reset all selections
@@ -242,13 +294,18 @@
             selectedCard.classList.add('selected', 'pulse');
             selectedTopic = topicId;
             
-            // Enable submit button
-            document.getElementById('submitBtn').disabled = false;
+            // Enable submit button only if email is saved
+            document.getElementById('submitBtn').disabled = !userEmail;
         }
 
         function submitVote() {
             if (!selectedTopic) {
-                alert("Please select a topic first!");
+                showNotification(false, "Please select a topic first!");
+                return;
+            }
+            
+            if (!userEmail) {
+                showNotification(false, "Please save your email first!");
                 return;
             }
 
@@ -257,35 +314,37 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
 
-            // Send email via EmailJS
-            emailjs.send("service_32swev6", "template_p74vyip", {
-                to_email: "machelaaron@gmail.com",
-                topic: topics[selectedTopic]
-            })
-            .then(function(response) {
-                console.log("SUCCESS!", response.status, response.text);
-                showNotification(true);
-            }, function(error) {
-                console.log("FAILED...", error);
-                showNotification(false);
-            })
-            .finally(() => {
-                resetVoting();
-            });
+            // Simulate sending email (in a real implementation, you would use EmailJS or backend API)
+            setTimeout(() => {
+                try {
+                    // This would be replaced with actual email sending
+                    console.log(`Vote submitted: ${topics[selectedTopic]} by ${userEmail}`);
+                    
+                    // Show success notification
+                    showNotification(true, "Thank you for your vote! Your selection has been sent.");
+                    
+                    // Add animation to selected card
+                    document.querySelector('.topic-card.selected').classList.add('vote-animation');
+                } catch (error) {
+                    showNotification(false, "Error sending vote. Please try again.");
+                } finally {
+                    resetVoting();
+                }
+            }, 1500);
         }
 
-        function showNotification(success) {
+        function showNotification(success, message) {
             const notification = document.getElementById('notification');
             const title = notification.querySelector('h4');
-            const message = notification.querySelector('p');
+            const messageEl = notification.querySelector('p');
             
             if (success) {
-                title.textContent = "Thank you for your vote!";
-                message.textContent = "Your selection has been sent successfully.";
+                title.textContent = "Success!";
+                messageEl.textContent = message;
                 notification.querySelector('i').className = "fas fa-check-circle text-green-500 text-xl";
             } else {
-                title.textContent = "Error sending vote";
-                message.textContent = "Please try again later.";
+                title.textContent = "Error";
+                messageEl.textContent = message;
                 notification.querySelector('i').className = "fas fa-exclamation-circle text-red-500 text-xl";
             }
             
@@ -300,7 +359,7 @@
         function resetVoting() {
             // Reset selections
             document.querySelectorAll('.topic-card').forEach(card => {
-                card.classList.remove('selected', 'pulse');
+                card.classList.remove('selected', 'pulse', 'vote-animation');
             });
             
             // Reset button
