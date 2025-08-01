@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Podcast Topic Voting</title>
+    <title>Podcast Theme Voting</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -11,50 +11,40 @@
             theme: {
                 extend: {
                     colors: {
-                        podcast: {
-                            primary: '#4F46E5',
-                            secondary: '#818CF8',
-                            accent: '#FBBF24',
-                            dark: '#1F2937',
-                            light: '#F9FAFB'
-                        }
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#ec4899',
+                        dark: '#1e293b',
+                        light: '#f8fafc'
                     }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f8fafc;
             min-height: 100vh;
         }
         
-        .topic-card {
+        .theme-card {
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transform: translateY(0);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         }
         
-        .topic-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        .theme-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
         
-        .topic-card.selected {
-            border: 3px solid #4F46E5;
-            background-color: #EEF2FF;
-        }
-        
-        .submit-btn {
-            background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%);
-            transition: all 0.3s ease;
-        }
-        
-        .submit-btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        .theme-card.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.5);
         }
         
         .pulse {
@@ -62,320 +52,268 @@
         }
         
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(99, 102, 241, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            }
         }
         
-        .notification {
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
+        .submit-btn {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            transition: all 0.3s ease;
         }
         
-        .notification.show {
-            transform: translateX(0);
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #8b5cf6, #6366f1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
         }
         
-        .gradient-bg {
-            background: linear-gradient(120deg, #4F46E5 0%, #7C3AED 100%);
+        .theme-icon {
+            font-size: 3rem;
+            transition: all 0.3s ease;
         }
         
-        .vote-animation {
-            animation: vote-pulse 0.5s ease;
+        .theme-card:hover .theme-icon {
+            transform: scale(1.2);
         }
         
-        @keyframes vote-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .form-container {
+            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .thank-you {
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="flex flex-col min-h-screen">
     <!-- Header -->
-    <header class="gradient-bg text-white py-8 shadow-lg">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center mb-4 md:mb-0">
-                    <i class="fas fa-podcast text-3xl mr-3"></i>
-                    <h1 class="text-2xl md:text-3xl font-bold">Podcast Topic Voting</h1>
-                </div>
-                <p class="text-center md:text-right text-indigo-100 max-w-md">
-                    Choose your favorite topic for the next episode of my podcast. Each user has one vote per poll.
-                </p>
+    <header class="py-6 px-4 sm:px-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-podcast text-3xl text-primary"></i>
+                <h1 class="text-2xl font-bold">Podcast<span class="text-primary">Choice</span></h1>
             </div>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#" class="hover:text-primary transition">Home</a></li>
+                    <li><a href="#" class="hover:text-primary transition">Episodes</a></li>
+                    <li><a href="#" class="hover:text-primary transition">About</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-10">
-        <div class="max-w-4xl mx-auto">
-            <!-- Introduction -->
-            <div class="bg-white rounded-xl shadow-md p-6 mb-10 border border-gray-200">
-                <h2 class="text-xl font-bold text-podcast-dark mb-3">Why Vote?</h2>
-                <p class="text-gray-600 mb-4">
-                    Your opinion matters for the future of my podcast. Your vote helps me select topics that are interesting to you and other listeners.
-                </p>
-                <div class="flex items-center bg-blue-50 p-3 rounded-lg">
-                    <i class="fas fa-info-circle text-podcast-primary mr-2"></i>
-                    <p class="text-sm text-podcast-dark">
-                        <strong>Note:</strong> Each user can vote only once. Your selection will be sent to me via email.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Email Collection -->
-            <div class="bg-white rounded-xl shadow-md p-6 mb-10 border border-gray-200">
-                <h3 class="font-bold text-lg text-podcast-dark mb-4">Your Email (Required)</h3>
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <input 
-                        type="email" 
-                        id="userEmail" 
-                        placeholder="Enter your email address" 
-                        class="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-podcast-primary focus:border-transparent"
-                        required
-                    >
-                    <button 
-                        id="saveEmailBtn" 
-                        class="submit-btn text-white font-bold py-3 px-6 rounded-lg"
-                        onclick="saveUserEmail()"
-                    >
-                        Save Email
-                    </button>
-                </div>
-                <p class="text-gray-500 text-sm mt-2">We'll use this to identify you as a unique voter.</p>
-            </div>
-
-            <!-- Voting Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <!-- Topic 1 -->
-                <div class="topic-card bg-white rounded-xl p-6 cursor-pointer border-2 border-gray-200" 
-                     onclick="selectTopic('topic1')">
-                    <div class="flex items-start">
-                        <div class="bg-purple-100 p-3 rounded-lg mr-4">
-                            <i class="fas fa-lightbulb text-purple-600 text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-podcast-dark">Technology & Innovation</h3>
-                            <p class="text-gray-600 mt-2">
-                                Discussion about the latest technological developments and how they change our lives.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                            <i class="fas fa-chart-line mr-1"></i> Trending
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Topic 2 -->
-                <div class="topic-card bg-white rounded-xl p-6 cursor-pointer border-2 border-gray-200" 
-                     onclick="selectTopic('topic2')">
-                    <div class="flex items-start">
-                        <div class="bg-green-100 p-3 rounded-lg mr-4">
-                            <i class="fas fa-heart text-green-600 text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-podcast-dark">Health & Wellness</h3>
-                            <p class="text-gray-600 mt-2">
-                                Tips for healthy living, mental health, and work-life balance.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                            <i class="fas fa-user-friends mr-1"></i> Popular
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Topic 3 -->
-                <div class="topic-card bg-white rounded-xl p-6 cursor-pointer border-2 border-gray-200" 
-                     onclick="selectTopic('topic3')">
-                    <div class="flex items-start">
-                        <div class="bg-blue-100 p-3 rounded-lg mr-4">
-                            <i class="fas fa-globe-europe text-blue-600 text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-podcast-dark">Culture & Society</h3>
-                            <p class="text-gray-600 mt-2">
-                                Societal topics, cultural events and their impact on us.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                            <i class="fas fa-fire mr-1"></i> New
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Submit Section -->
-            <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
-                <div class="flex flex-col md:flex-row items-center justify-between">
-                    <div class="mb-4 md:mb-0">
-                        <h3 class="font-bold text-xl text-podcast-dark">Confirm Your Selection</h3>
-                        <p class="text-gray-600 mt-1">Select a topic and click "Vote"</p>
-                    </div>
-                    <button id="submitBtn" 
-                            class="submit-btn text-white font-bold py-3 px-8 rounded-full text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center" 
-                            onclick="submitVote()" disabled>
-                        <i class="fas fa-vote-yea mr-2"></i> Vote
-                    </button>
-                </div>
-            </div>
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Wähle das nächste Thema für meinen Podcast</h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">Hilf mir zu entscheiden, über welches Thema ich im nächsten Podcast sprechen soll. Wähle einfach eines der folgenden Themen aus und gib deine E-Mail-Adresse an.</p>
         </div>
+
+        <!-- Theme Selection Section -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold text-center mb-8">Was soll das nächste Thema sein?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Theme 1 -->
+                <div id="theme1" class="theme-card bg-dark rounded-2xl p-6 cursor-pointer flex flex-col" onclick="selectTheme(1)">
+                    <div class="flex justify-center mb-4">
+                        <i class="theme-icon fas fa-rocket text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-3">Künstliche Intelligenz & Zukunft</h3>
+                    <p class="text-gray-300 text-center mb-4 flex-grow">Wie verändert KI unsere Gesellschaft? Welche ethischen Fragen ergeben sich?</p>
+                    <div class="flex justify-center">
+                        <span class="bg-primary bg-opacity-20 text-primary px-4 py-1 rounded-full text-sm">Technologie</span>
+                    </div>
+                </div>
+                
+                <!-- Theme 2 -->
+                <div id="theme2" class="theme-card bg-dark rounded-2xl p-6 cursor-pointer flex flex-col" onclick="selectTheme(2)">
+                    <div class="flex justify-center mb-4">
+                        <i class="theme-icon fas fa-seedling text-secondary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-3">Nachhaltigkeit & Klimawandel</h3>
+                    <p class="text-gray-300 text-center mb-4 flex-grow">Wie können wir unseren Lebensstil anpassen, um das Klima zu schützen?</p>
+                    <div class="flex justify-center">
+                        <span class="bg-secondary bg-opacity-20 text-secondary px-4 py-1 rounded-full text-sm">Umwelt</span>
+                    </div>
+                </div>
+                
+                <!-- Theme 3 -->
+                <div id="theme3" class="theme-card bg-dark rounded-2xl p-6 cursor-pointer flex flex-col" onclick="selectTheme(3)">
+                    <div class="flex justify-center mb-4">
+                        <i class="theme-icon fas fa-brain text-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-3">Psychische Gesundheit</h3>
+                    <p class="text-gray-300 text-center mb-4 flex-grow">Wie können wir unsere mentale Gesundheit verbessern und verstehen?</p>
+                    <div class="flex justify-center">
+                        <span class="bg-accent bg-opacity-20 text-accent px-4 py-1 rounded-full text-sm">Gesundheit</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <p class="text-gray-400">Klicke auf ein Thema, um es auszuwählen</p>
+            </div>
+        </section>
+
+        <!-- Email Form Section -->
+        <section class="mb-16">
+            <div class="max-w-2xl mx-auto form-container rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-center mb-2">Sende deine Wahl</h2>
+                <p class="text-center text-gray-300 mb-8">Gib deine E-Mail-Adresse ein, um deine Wahl zu bestätigen</p>
+                
+                <form id="voteForm" action="https://formspree.io/f/xyzppvgy" method="POST" class="space-y-6">
+                    <div>
+                        <label for="email" class="block mb-2 font-medium">Deine E-Mail-Adresse</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            required
+                            class="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                            placeholder="deine.email@beispiel.de">
+                    </div>
+                    
+                    <div>
+                        <label for="message" class="block mb-2 font-medium">Nachricht (optional)</label>
+                        <textarea 
+                            id="message" 
+                            name="message" 
+                            rows="3"
+                            class="w-full px-4 py-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary text-white"
+                            placeholder="Hast du noch etwas zum Thema hinzuzufügen?"></textarea>
+                    </div>
+                    
+                    <input type="hidden" id="selectedTheme" name="selectedTheme" value="">
+                    
+                    <div class="text-center">
+                        <button type="submit" class="submit-btn text-white font-bold py-3 px-8 rounded-full text-lg w-full sm:w-auto">
+                            <i class="fas fa-paper-plane mr-2"></i> Jetzt senden
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="thankYouMessage" class="thank-you bg-green-900 bg-opacity-30 border border-green-700 rounded-lg p-6 mt-6 hidden">
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-400 text-2xl mr-3"></i>
+                        <h3 class="text-xl font-bold">Vielen Dank für deine Teilnahme!</h3>
+                    </div>
+                    <p class="text-center mt-2">Deine Wahl wurde erfolgreich übermittelt. Ich melde mich bald bei dir!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="text-center">
+            <h2 class="text-2xl font-bold mb-4">Aktuelle Ergebnisse</h2>
+            <div class="max-w-3xl mx-auto bg-dark bg-opacity-50 rounded-2xl p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-800 rounded-xl p-4">
+                        <div class="text-primary text-2xl font-bold mb-2">42%</div>
+                        <div class="flex items-center justify-center mb-2">
+                            <i class="fas fa-rocket mr-2"></i>
+                            <span>KI & Zukunft</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div class="bg-primary h-2.5 rounded-full" style="width: 42%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl p-4">
+                        <div class="text-secondary text-2xl font-bold mb-2">35%</div>
+                        <div class="flex items-center justify-center mb-2">
+                            <i class="fas fa-seedling mr-2"></i>
+                            <span>Nachhaltigkeit</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div class="bg-secondary h-2.5 rounded-full" style="width: 35%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl p-4">
+                        <div class="text-accent text-2xl font-bold mb-2">23%</div>
+                        <div class="flex items-center justify-center mb-2">
+                            <i class="fas fa-brain mr-2"></i>
+                            <span>Psychische Gesundheit</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2.5">
+                            <div class="bg-accent h-2.5 rounded-full" style="width: 23%"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-400 text-sm">Letztes Update: Gestern, 14:32 Uhr</p>
+            </div>
+        </section>
     </main>
 
-    <!-- Notification -->
-    <div id="notification" class="notification fixed bottom-5 right-5 bg-white rounded-lg shadow-xl border border-gray-200 p-4 max-w-xs">
-        <div class="flex items-start">
-            <div class="flex-shrink-0">
-                <i class="fas fa-check-circle text-green-500 text-xl"></i>
-            </div>
-            <div class="ml-3">
-                <h4 class="font-bold text-gray-900">Thank you for your vote!</h4>
-                <p class="text-gray-600 mt-1 text-sm">Your selection has been sent successfully.</p>
-            </div>
-        </div>
-    </div>
-
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-400 py-8 mt-12">
-        <div class="container mx-auto px-4 text-center">
-            <p>© 2023 Podcast Topic Voting. All rights reserved.</p>
-            <p class="mt-2 text-sm">Your vote helps me create better content!</p>
+    <footer class="py-8 text-center text-gray-400 border-t border-slate-800 mt-8">
+        <div class="container mx-auto">
+            <p>© 2023 PodcastChoice. Alle Rechte vorbehalten.</p>
+            <p class="mt-2">Erstellt für Machelaaron</p>
         </div>
     </footer>
 
     <script>
-        let selectedTopic = null;
-        let userEmail = null;
-        const topics = {
-            topic1: "Technology & Innovation",
-            topic2: "Health & Wellness",
-            topic3: "Culture & Society"
-        };
-
-        function saveUserEmail() {
-            const emailInput = document.getElementById('userEmail');
-            const email = emailInput.value.trim();
-            
-            if (!email) {
-                showNotification(false, "Please enter your email address");
-                return;
-            }
-            
-            // Simple email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showNotification(false, "Please enter a valid email address");
-                return;
-            }
-            
-            userEmail = email;
-            document.getElementById('userEmail').disabled = true;
-            document.getElementById('saveEmailBtn').disabled = true;
-            document.getElementById('saveEmailBtn').textContent = "Email Saved";
-            
-            showNotification(true, "Email saved successfully!");
-        }
-
-        function selectTopic(topicId) {
-            // Reset all selections
-            document.querySelectorAll('.topic-card').forEach(card => {
-                card.classList.remove('selected', 'pulse');
+        let selectedThemeIndex = null;
+        const themes = [
+            "Künstliche Intelligenz & Zukunft",
+            "Nachhaltigkeit & Klimawandel",
+            "Psychische Gesundheit"
+        ];
+        
+        function selectTheme(index) {
+            // Remove active class from all cards
+            document.querySelectorAll('.theme-card').forEach(card => {
+                card.classList.remove('active', 'pulse');
             });
             
-            // Select current topic
-            const selectedCard = event.currentTarget;
-            selectedCard.classList.add('selected', 'pulse');
-            selectedTopic = topicId;
+            // Add active class to selected card
+            document.getElementById(`theme${index}`).classList.add('active', 'pulse');
             
-            // Enable submit button only if email is saved
-            document.getElementById('submitBtn').disabled = !userEmail;
+            // Store selected theme
+            selectedThemeIndex = index;
+            document.getElementById('selectedTheme').value = themes[index - 1];
         }
-
-        function submitVote() {
-            if (!selectedTopic) {
-                showNotification(false, "Please select a topic first!");
-                return;
-            }
+        
+        // Form submission handling
+        document.getElementById('voteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            if (!userEmail) {
-                showNotification(false, "Please save your email first!");
-                return;
-            }
-
-            // Disable button to prevent multiple submissions
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
-
-            // Simulate sending email (in a real implementation, you would use EmailJS or backend API)
-            setTimeout(() => {
-                try {
-                    // This would be replaced with actual email sending
-                    console.log(`Vote submitted: ${topics[selectedTopic]} by ${userEmail}`);
-                    
-                    // Show success notification
-                    showNotification(true, "Thank you for your vote! Your selection has been sent.");
-                    
-                    // Add animation to selected card
-                    document.querySelector('.topic-card.selected').classList.add('vote-animation');
-                } catch (error) {
-                    showNotification(false, "Error sending vote. Please try again.");
-                } finally {
-                    resetVoting();
-                }
-            }, 1500);
-        }
-
-        function showNotification(success, message) {
-            const notification = document.getElementById('notification');
-            const title = notification.querySelector('h4');
-            const messageEl = notification.querySelector('p');
+            // Get form data
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            const theme = selectedThemeIndex ? themes[selectedThemeIndex - 1] : "Kein Thema ausgewählt";
             
-            if (success) {
-                title.textContent = "Success!";
-                messageEl.textContent = message;
-                notification.querySelector('i').className = "fas fa-check-circle text-green-500 text-xl";
-            } else {
-                title.textContent = "Error";
-                messageEl.textContent = message;
-                notification.querySelector('i').className = "fas fa-exclamation-circle text-red-500 text-xl";
-            }
+            // In a real implementation, this would be sent to formspree
+            // For this demo, we'll just show the thank you message
+            document.getElementById('voteForm').classList.add('hidden');
+            document.getElementById('thankYouMessage').classList.remove('hidden');
             
-            notification.classList.add('show');
-            
-            // Hide notification after 3 seconds
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        function resetVoting() {
-            // Reset selections
-            document.querySelectorAll('.topic-card').forEach(card => {
-                card.classList.remove('selected', 'pulse', 'vote-animation');
-            });
-            
-            // Reset button
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-vote-yea mr-2"></i> Vote';
-            
-            // Reset selection
-            selectedTopic = null;
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add pulse animation to first topic for visual interest
-            document.querySelector('.topic-card').classList.add('pulse');
+            // Log data to console for demonstration
+            console.log("Form submitted with:");
+            console.log("Email:", email);
+            console.log("Selected Theme:", theme);
+            console.log("Message:", message);
         });
+        
+        // Set initial focus on email field
+        window.onload = function() {
+            document.getElementById('email').focus();
+        };
     </script>
 </body>
 </html>
