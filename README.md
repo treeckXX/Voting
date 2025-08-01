@@ -291,7 +291,7 @@
             
             // Example using EmailJS (you would need to set up an account):
             /*
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+            emailjs.send("service_32swev6", "template_pirb1ln", {
                 to_email: "machelaaron@gmail.com",
                 topic: topic
             });
